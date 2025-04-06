@@ -1,0 +1,62 @@
+[
+  {
+    "id": "L3MsD9XoKuWcGyT2NaQpB",
+    "name": "Taylor Swift",
+    "email": "taylor.swift@musicstar.com",
+    "phone": "876-543-2109"
+  },
+  {
+    "id": "R7DsL6XoWuJvGpY2MTQKC",
+    "name": "Justin Bieber",
+    "email": "justin.bieber@superstar.io",
+    "phone": "219-876-5432"
+  },
+  {
+    "id": "Y5NtL3QoXKuWvGJ2MpKDC",
+    "name": "Lady Gaga",
+    "email": "lady.gaga@musicicon.co",
+    "phone": "654-321-0987"
+  },
+  {
+    "id": "K2PtL4WoXJuWvGY3MpQNC",
+    "name": "Ariana Grande",
+    "email": "ariana.grande@popstar.org",
+    "phone": "567-890-1234"
+  },
+  {
+    "id": "J8LsA9TzKuWbGXoY2MpQC",
+    "name": "Shawn Mendes",
+    "email": "shawn.mendes@musicworld.com",
+    "phone": "890-123-4567"
+  },
+  {
+    "id": "W1FaL6XoJuWvGPY3MpQTC",
+    "name": "Selena Gomez",
+    "email": "selena.gomez@popmusic.us",
+    "phone": "901-234-5678"
+  },
+  {
+    "id": "N7MsK8XoJuWvGTY2MpQPC",
+    "name": "Billie Eilish",
+    "email": "billie.eilish@newwave.io",
+    "phone": "012-345-6789"
+  },
+  {
+    "id": "T5NtL3WoXJuWvGY2MpQKC",
+    "name": "Kanye West",
+    "email": "kanye.west@hiphopstar.com",
+    "phone": "123-456-7890"
+  },
+  {
+    "id": "A2DsL4XoJuWvGTY3MpQNC",
+    "name": "Rihanna",
+    "email": "rihanna@superstar.net",
+    "phone": "234-567-8901"
+  },
+  {
+    "id": "P-C4Dl0gEZvASNLEuhIUh",
+    "name": "Rocky Lynch",
+    "email": "rockylynch@r5group.net",
+    "phone": "203-767-2232"
+  }
+]
