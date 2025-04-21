@@ -45,18 +45,20 @@ export const updateContactController = ctrlWrapper(async (req, res) => {
 });
 
 // Delete contact by id if it belongs to the user
-
 export const deleteContactController = ctrlWrapper(async (req, res) => {
   const { id } = req.params;
   const { id: owner } = req.user;
-  const data = await contactsService.deleteContact({ id, owner });
+  const deletedContact = await contactsService.deleteContact({ id, owner });
 
-  if (!data) {
+  if (!deletedContact) {
     throw HttpError(404, `Contact with id=${id} not found`);
   }
 
-  // Response with no body and status code 204
-  res.status(204).send();
+  // Return confirmation message and deleted data
+  res.status(200).json({
+    message: "Contact deleted successfully",
+    deletedContact,
+  });
 });
 
 // Update the "favorite" status of a contact
