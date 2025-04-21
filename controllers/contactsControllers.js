@@ -40,6 +40,7 @@ export const deleteContactController = ctrlWrapper(async (req, res) => {
 
   res.status(200).json({
     message: "Contact successfully deleted",
+    contact: data,
   });
 });
 
