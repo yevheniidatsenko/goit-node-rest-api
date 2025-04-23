@@ -16,6 +16,10 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   const { token, user } = await authServices.loginUser(req.body);
 
+  if (!user || !user.email) {
+    return res.status(500).json({ message: "User data missing" });
+  }
+
   res.status(200).json({
     message: `The user ${user.email} was logged in!`,
     token,
@@ -24,6 +28,10 @@ const loginController = async (req, res) => {
 };
 
 const logoutController = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
   const { id, email } = req.user;
   await authServices.logoutUser(id);
 

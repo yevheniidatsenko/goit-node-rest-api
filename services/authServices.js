@@ -43,7 +43,13 @@ export const loginUser = async (data) => {
 
   await user.update({ token });
 
-  return { token };
+  return {
+    token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  };
 };
 
 export const logoutUser = async (id) => {
