@@ -1,4 +1,4 @@
-**Home Assignment: REST API with File Upload**
+# Home Assignment: REST API with File Upload
 
 ### Overview
 
