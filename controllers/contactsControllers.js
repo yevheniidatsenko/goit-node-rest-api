@@ -66,13 +66,19 @@ export const deleteContactController = ctrlWrapper(async (req, res) => {
 export const updateStatusContactController = ctrlWrapper(async (req, res) => {
   const { id } = req.params;
   const { id: owner } = req.user;
-  // Validation of req.body (e.g., ensuring the "favorite" field exists) is recommended
-  const data = await contactsService.updateStatusContact(
-    { id, owner },
-    req.body
-  );
+
+  if (req.body.favorite === undefined) {
+    throw HttpError(400, "Missing field 'favorite'");
+  }
+
+  const data = await contactsService.updateStatusContact(id, owner, req.body);
+
   if (!data) {
     throw HttpError(404, `Contact with id=${id} not found`);
   }
-  res.json(data);
+
+  res.status(200).json({
+    message: "Contact status updated successfully",
+    data,
+  });
 });

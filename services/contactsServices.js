@@ -28,8 +28,11 @@ export const deleteContact = (query) =>
     where: query,
   });
 
-export const updateStatusContact = async (id, { favorite }) => {
-  const contact = await getContactById(id);
+export const updateStatusContact = async (id, owner, { favorite }) => {
+  const contact = await Contact.findOne({
+    where: { id, owner },
+  });
+
   if (!contact) return null;
 
   return contact.update({ favorite }, { returning: true });

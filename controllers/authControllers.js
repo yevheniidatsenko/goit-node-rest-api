@@ -6,7 +6,7 @@ const registerController = async (req, res) => {
 
   res.status(201).json({
     message: `User ${email} registered successfully!`,
-    user: {
+    data: {
       email,
       subscription,
     },
@@ -16,14 +16,15 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   const { token, user } = await authServices.loginUser(req.body);
 
-  if (!user || !user.email) {
-    return res.status(500).json({ message: "User data missing" });
-  }
-
   res.status(200).json({
     message: `The user ${user.email} was logged in!`,
-    token,
-    user,
+    data: {
+      token,
+      user: {
+        email: user.email,
+        subscription: user.subscription,
+      },
+    },
   });
 };
 
@@ -37,7 +38,9 @@ const logoutController = async (req, res) => {
 
   res.status(200).json({
     message: `The user ${email} was logged out!`,
-    user: { email },
+    data: {
+      email,
+    },
   });
 };
 
@@ -45,8 +48,11 @@ const getCurrentController = (req, res) => {
   const { email, subscription } = req.user;
 
   res.status(200).json({
-    email,
-    subscription,
+    message: "Current user data retrieved successfully",
+    data: {
+      email,
+      subscription,
+    },
   });
 };
 
