@@ -60,38 +60,38 @@ export const getCurrentController = ctrlWrapper((req, res) => {
 });
 
 export const updateAvatar = ctrlWrapper(async (req, res) => {
-  if (!req.user) {
-    throw HttpError(401, "Not authorized");
-  }
-
-  if (!req.file) {
-    throw HttpError(400, "Avatar file is required");
-  }
+  if (!req.user) throw HttpError(401, "Not authorized");
+  if (!req.file) throw HttpError(400, "Avatar file is required");
 
   const { id, avatarURL: oldAvatarURL } = req.user;
   const { path: tempPath, originalname } = req.file;
 
-  // Generate filename
-  const ext = path.extname(originalname);
-  const filename = `${id}_${Date.now()}${ext}`;
   const avatarsDir = path.resolve("public", "avatars");
+  await fs.mkdir(avatarsDir, { recursive: true });
+
+  const ext = path.extname(originalname).toLowerCase();
+  const filename = `${id}_${Date.now()}${ext}`;
   const finalPath = path.join(avatarsDir, filename);
 
-  // Move file directly
-  await fs.rename(tempPath, finalPath);
+  try {
+    await fs.copyFile(tempPath, finalPath);
+    await fs.unlink(tempPath);
 
-  // Delete old avatar if exists
-  if (oldAvatarURL) {
-    const oldFilename = path.basename(oldAvatarURL);
-    const oldPath = path.join(avatarsDir, oldFilename);
-    await fs.unlink(oldPath).catch(() => {});
+    if (oldAvatarURL) {
+      const oldPath = path.join(avatarsDir, path.basename(oldAvatarURL));
+      await fs.unlink(oldPath).catch(() => {});
+    }
+
+    // Оновлення БД
+    const newAvatarURL = `/avatars/${filename}`;
+    await updateUserAvatar(id, { avatarURL: newAvatarURL });
+
+    res.json({
+      avatarURL: newAvatarURL,
+      message: "Avatar updated successfully",
+    });
+  } catch (err) {
+    await fs.unlink(tempPath).catch(() => {});
+    throw HttpError(500, "Avatar processing failed");
   }
-
-  const newAvatarURL = `/avatars/${filename}`;
-  await updateUserAvatar(id, { avatarURL: newAvatarURL });
-
-  res.status(200).json({
-    message: "Avatar updated successfully",
-    avatarURL: newAvatarURL,
-  });
 });
