@@ -1,33 +1,57 @@
-# Home Assignment: REST API with File Upload
+# Home Assignment: Email Verification in Node.js REST API
 
-### Overview
+## Description
 
-Implemented a Node.js/Express REST API for user management with avatar upload functionality using Multer. Key features include user registration with Gravatar-based avatars, login/logout, and avatar updates via file upload.
+This project extends a REST API for managing contacts by adding user email verification after registration. The verification process uses Nodemailer and the ukr.net SMTP service to send confirmation emails. The implementation ensures that only verified users can log in, enhancing security and data integrity.
 
-### Features
+## Features
 
-1. **Static File Handling**
+- **User Registration with Email Verification:**
 
-   - `public/avatars` for serving static avatar images
-   - `temp` folder for temporary uploads
-   - Express static middleware configuration
+  - On registration, the user receives an email with a unique verification link.
+  - The user's `verify` status is set to `false` and a `verificationToken` is generated and stored in the database.
 
-2. **User Model**
+- **Email Verification Endpoint:**
 
-   - Added `avatarURL` field (STRING)
-   - Gravatar integration for default avatars
+  - `GET /auth/verify/:verificationToken`
+  - When the user clicks the link, the API verifies the token.
+  - On first use, the token is cleared, `verify` is set to `true`, and a success message is returned.
+  - If the link is used again or invalid, a 404 error with `User not found` is returned.
 
-3. **Endpoints**
+- **Login Restrictions:**
 
-   - `POST /auth/register` - Create user with Gravatar
-   - `POST /auth/login` - JWT authentication
-   - `PATCH /auth/avatars` - Avatar update (Multer middleware)
-   - `GET /users/current` - Current user info
+  - Only users with a verified email (`verify: true`) can log in.
 
-4. **File Upload**
-   - Multer configuration for temp storage
-   - File validation (size/type via middleware)
-   - Atomic file operations with cleanup
+- **Resend Verification Email:**
+  - `POST /auth/verify` with `{ "email": "user@example.com" }`
+  - Allows unverified users to request another verification email.
+  - If the email is missing or already verified, appropriate error messages and status codes are returned.
+
+## Technical Details
+
+- **Stack:** Node.js, Express, Sequelize, Nodemailer, ukr.net SMTP
+- **User Model:** Includes `verify` (boolean, default `false`) and `verificationToken` (string)
+- **Token Generation:** Uses `nanoid` for unique verification tokens
+- **Email Sending:** Uses Nodemailer with ukr.net SMTP integration
+- **Error Handling:** Returns clear JSON messages and status codes for all scenarios
+
+## Usage
+
+1. **Register a new user:**  
+   `POST /auth/register`  
+   → User receives a verification email
+
+2. **Verify email:**  
+   `GET /auth/verify/:verificationToken`  
+   → On first click: 200 OK, "Verification successful"  
+   → On repeat/invalid: 404 Not Found, "User not found"
+
+3. **Resend verification email:**  
+   `POST /auth/verify` with body `{ "email": "user@example.com" }`  
+   → 200 OK if sent, 400 if already verified or missing email
+
+4. **Login:**  
+   Only possible after successful email verification
 
 ## Results
 
@@ -36,5 +60,3 @@ Implemented a Node.js/Express REST API for user management with avatar upload fu
 
 ![Task Results](/screenshots/SCR_1.png)
 ![Task Results](/screenshots/SCR_2.png)
-![Task Results](/screenshots/SCR_3.png)
-![Task Results](/screenshots/SCR_4.png)
