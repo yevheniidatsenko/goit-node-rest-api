@@ -15,12 +15,23 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const { payload, error } = verifyToken(token);
-    if (error) throw error;
+    if (error) {
+      console.error("JWT verification error:", error.message);
+      throw error;
+    }
+
+    if (!payload.id) {
+      return next(HttpError(401, "Token payload missing user id"));
+    }
 
     const user = await findUser({ id: payload.id });
 
-    if (!user || user.token !== token) {
-      return next(HttpError(401, "User not found or token invalid"));
+    if (!user) {
+      return next(HttpError(401, "User not found"));
+    }
+
+    if (user.token !== token) {
+      return next(HttpError(401, "Token mismatch - please login again"));
     }
 
     req.user = {

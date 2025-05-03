@@ -7,6 +7,8 @@ import {
   loginUser,
   logoutUser,
   updateUserAvatar,
+  verifyUser,
+  resendVerification,
 } from "../services/authServices.js";
 
 export const registerController = ctrlWrapper(async (req, res) => {
@@ -41,7 +43,6 @@ export const logoutController = ctrlWrapper(async (req, res) => {
   await logoutUser(id);
 
   res.status(200).json({
-    // Changed from 204 to 200 to allow message
     message: "Logout successful",
   });
 });
@@ -59,7 +60,7 @@ export const getCurrentController = ctrlWrapper((req, res) => {
   });
 });
 
-export const updateAvatar = ctrlWrapper(async (req, res) => {
+export const updateAvatarController = ctrlWrapper(async (req, res) => {
   if (!req.user) throw HttpError(401, "Not authorized");
   if (!req.file) throw HttpError(400, "Avatar file is required");
 
@@ -82,7 +83,6 @@ export const updateAvatar = ctrlWrapper(async (req, res) => {
       await fs.unlink(oldPath).catch(() => {});
     }
 
-    // Оновлення БД
     const newAvatarURL = `/avatars/${filename}`;
     await updateUserAvatar(id, { avatarURL: newAvatarURL });
 
@@ -94,4 +94,32 @@ export const updateAvatar = ctrlWrapper(async (req, res) => {
     await fs.unlink(tempPath).catch(() => {});
     throw HttpError(500, "Avatar processing failed");
   }
+});
+
+export const verifyController = ctrlWrapper(async (req, res) => {
+  const { verificationToken } = req.params;
+
+  if (!verificationToken) {
+    throw HttpError(400, "Verification token is required");
+  }
+
+  await verifyUser(verificationToken);
+
+  res.status(200).json({
+    message: "Verification successful",
+  });
+});
+
+export const resendVerificationController = ctrlWrapper(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw HttpError(400, "missing required field email");
+  }
+
+  await resendVerification(email);
+
+  res.status(200).json({
+    message: "Verification email sent",
+  });
 });
